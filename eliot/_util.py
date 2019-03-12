@@ -4,6 +4,8 @@ Utilities that don't go anywhere else.
 
 from __future__ import unicode_literals
 
+import sys
+
 from types import ModuleType
 
 from six import exec_, text_type as unicode
@@ -52,6 +54,9 @@ def load_module(name, original_module):
     @return: A new, distinct module.
     """
     module = ModuleType(name)
+    if getattr(sys, 'frozen', False):
+        module.__dict__.update(original_module.__dict__)
+        return module
     path = original_module.__file__
     if path.endswith(".pyc") or path.endswith(".pyo"):
         path = path[:-1]
